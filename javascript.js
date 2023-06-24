@@ -915,4 +915,157 @@ let {name6 : newname, age5: newage} = user14; // 변수 이름을 바꿀 수 있
 console.log(newname);
 console.log(newage);
 
-// ------------------
+// 나머지 매개변수, 전개 구문
+function showname(name){ // 인수 전달에 대한 개수 제한이 없음
+  console.log(name);
+}
+
+showname('mike'); // 'mike'
+showname('mike', 'tom'); // ?
+showname(); // undefined
+
+// arguments
+//   - 함수로 넘어 온 모든 인수에 접근
+//   - 함수 내에서 이용 가능한 지역 변수
+//   - length / index
+//   - Array 형태의 객체
+//   - 배열의 내장 메서드 없음(forEach, map)
+function showname2(name){
+  console.log(arguments.length);
+  console.log(arguments[0]);
+  console.log(arguments[1]);
+}
+
+showname2('mike', 'tom');
+
+// 나머지 매개변수(Rest parameters)
+function showname3(...names){
+  console.log(names);
+}
+
+showname3(); // undefined가 아닌 빈 배열이 나옴
+showname3('mike');
+showname3('mike', 'tom');
+
+function add(...numbers){
+  let result = 0;
+  numbers.forEach((num)=>(result+=num));
+  console.log(result);
+}
+
+add(1,2,3);
+add(1,2,3,4,5,6,7,8,9,10);
+
+function User(name, age, ...skills){ // 나머지 매개변수는 항상 마지막에 위치
+  this.name = name;
+  this.age - age;
+  this.skills = skills;
+}
+
+const user1 = new User("mike",30,"sgd","sgd");
+
+console.log(user1);
+
+// 전개 구문(Spread syntax) : 배열
+let arr1 = [1,2,3];
+let arr2 = [4,5,6];
+let result10 = [...arr1, ...arr2, 7, 8, 9]; // ...arr1 = 1,2,3, ...arr2 = 4,5,6
+console.log(result10); // [1,2,3,4,5,6,7,8,9]
+
+// 클로저(Closure) - 함수와 렉시컬 환경의 조합, 함수가 새성될 당시의 외부 변수를 기억, 생성 이후에도 계속 접근이 가능함
+// 어휘적 환경(Lexical Environment)
+function makeCounter() {
+  let num = 0;
+  
+  return function() {
+    return num++;
+  };
+}
+
+let counter = makeCounter();
+
+console.log(counter()); // 0
+console.log(counter()); // 1
+console.log(counter()); // 2
+
+// setTimeout : 일정 시간이 지난 후 함수를 실행
+setTimeout(function fn(){
+  // console.log(3)
+},3000); // 3000은 3초를 의미함
+
+function showname(name){
+  console.log(name);
+}
+// setTimeout(showname, 3000, 'mike'); // 함수, 시간, 인수
+
+// setInterval : 일정 시간 간격으로 함수를 반복
+num = 0;
+function showTime(){
+  console.log(`안녕하세요. 접속한지 ${num++}초가 지났습니다.`);
+  if(num > 5){
+    clearInterval(tId);}
+}
+
+// const tId = setInterval(showTime, 1000);  
+
+// call, apply, bind : 함수 호출 방식과 관계없이 this를 지정할 수 있음
+// call - 모든 함수에서 사용할 수 있으며 this를 특정값으로 지정할 수 있음
+const mike = {
+  name : "Mike"
+};
+
+const tom = {
+  name : "Tom"
+};
+
+function showThisName(){
+  console.log(this.name);
+}
+
+function update(birthYear, occupation){
+  this.birthYear = birthYear;
+  this.occupation = occupation;
+};
+
+update.call(mike, 1999, 'singer')
+console.log(mike);
+
+update.call(tom, 2002, 'teacher')
+console.log(tom);
+
+// apply - 매개변수를 처리하는 방법을 제외하면 call과 완전히 같음, call은 매개변수를 직접 받지만, apply는 매개변수를 배열로 받음
+const numss = [3, 10, 1, 6, 4];
+const minNum = Math.min.apply(null, numss);
+// = Math.min.apply(null, [3, 10, 1, 6, 4])
+const maxNum = Math.max.call(null, ...numss);
+// = Math.min.apply(null, 3, 10, 1, 6, 4)
+
+console.log(minNum);
+console.log(maxNum);
+
+// bind - 함수의 this 값을 영구히 바꿀 수 있음
+const updateMike = update.bind(mike);
+updateMike(1980, "police");
+console.log(mike);
+
+const userr = {
+  name: "mike",
+  showname: function(){
+    console.log(`hello, ${this.name}`);
+  }
+};
+
+userr.showname();
+let fn2 = userr.showname;
+
+fn2.call(userr);
+fn2.apply(userr);
+
+let boundFn = fn2.bind(userr);
+
+boundFn();
+
+// 상속, prototype
+console.log(userr.hasOwnProperty('name')); // true
+console.log(userr.hasOwnProperty('age')); // false
+
